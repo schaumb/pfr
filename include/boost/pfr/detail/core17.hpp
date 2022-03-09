@@ -125,15 +125,15 @@ constexpr bool clearly_has_a_bitfield() {
 }
 
 template<class Getter, std::size_t ...Ix>
-constexpr bool can_be_a_bitfield(std::index_sequence<Ix...>) {
+constexpr bool can_has_a_bitfield(std::index_sequence<Ix...>) {
     return (std::is_integral_v<std::invoke_result_t<Getter, size_t_<Ix>, std::false_type>> || ...);
 }
 
 template<class T>
-constexpr bool can_be_a_bitfield() {
+constexpr bool can_has_a_bitfield() {
     typedef size_t_<boost::pfr::detail::fields_count<T>()> fields_count_tag;
     typedef decltype(std::get<0>(boost::pfr::detail::structure_member_getter_setter(std::declval<T&>(), fields_count_tag{}))) Getter;
-    return can_be_a_bitfield<Getter>(std::make_index_sequence<fields_count_tag{}>{});
+    return can_has_a_bitfield<Getter>(std::make_index_sequence<fields_count_tag{}>{});
 }
 
 template<class Getter, std::size_t ... Ix>
