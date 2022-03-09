@@ -13,7 +13,7 @@ import string
 # Skipping some letters that may produce keywords or are hard to read, or shadow template parameters
 ascii_letters = string.ascii_letters.replace("o", "").replace("O", "").replace("i", "").replace("I", "").replace("T", "")
 
-PROLOGUE = """// Copyright (c) 2016-2020 Antony Polukhin
+PROLOGUE = """// Copyright (c) 2016-2022 Antony Polukhin
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -37,35 +37,13 @@ PROLOGUE = """// Copyright (c) 2016-2020 Antony Polukhin
 #include <boost/pfr/detail/size_t_.hpp>
 
 namespace boost { namespace pfr { namespace detail {
-
-template <class... Args>
-constexpr auto make_tuple_of_references(Args&&... args) noexcept {
-  return sequence_tuple::tuple<Args&...>{ args... };
-}
-
-template <class T>
-constexpr auto tie_as_tuple(T& /*val*/, size_t_<0>) noexcept {
-  return sequence_tuple::tuple<>{};
-}
-
-template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<1>, std::enable_if_t<std::is_class< std::remove_cv_t<T> >::value>* = 0) noexcept {
-  auto& [a] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a);
-}
-
-
-template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<1>, std::enable_if_t<!std::is_class< std::remove_cv_t<T> >::value>* = 0) noexcept {
-  return ::boost::pfr::detail::make_tuple_of_references( val );
-}
-
 """
 
-############################################################################################################################
+########################################################################################################################
+
 EPILOGUE = """
 template <class T, std::size_t I>
-constexpr void tie_as_tuple(T& /*val*/, size_t_<I>) noexcept {
+constexpr void structure_member_getter_setter(T& /*val*/, size_t_<I>) noexcept {
   static_assert(sizeof(T) && false,
                 "====================> Boost.PFR: Too many fields in a structure T. Regenerate include/boost/pfr/detail/core17_generated.hpp file for appropriate count of fields. For example: `python ./misc/generate_cpp17.py 300 > include/boost/pfr/detail/core17_generated.hpp`");
 }
@@ -75,37 +53,54 @@ constexpr void tie_as_tuple(T& /*val*/, size_t_<I>) noexcept {
 #endif // BOOST_PFR_DETAIL_CORE17_GENERATED_HPP
 """
 
-############################################################################################################################
+########################################################################################################################
 
-
-indexes = "    a"
+indexes = []
 print(PROLOGUE)
 funcs_count = 100 if len(sys.argv) == 1 else int(sys.argv[1])
 max_args_on_a_line = len(ascii_letters)
-for i in range(1, funcs_count):
+for i in range(0, funcs_count):
     if i % max_args_on_a_line == 0:
-        indexes += ",\n    "
-    else:
-        indexes += ","
+        indexes.append([])
 
     if i >= max_args_on_a_line:
-        indexes += ascii_letters[i // max_args_on_a_line - 1]
-    indexes += ascii_letters[i % max_args_on_a_line]
+        indexes[-1].append(ascii_letters[i // max_args_on_a_line - 1] + ascii_letters[i % max_args_on_a_line])
+    else:
+        indexes[-1] += ascii_letters[i % max_args_on_a_line]
 
     print("template <class T>")
-    print("constexpr auto tie_as_tuple(T& val, size_t_<" + str(i + 1) + ">) noexcept {")
-    if i < max_args_on_a_line:
-        print("  auto& [" + indexes.strip() + "] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.")
-        print("  return ::boost::pfr::detail::make_tuple_of_references(" + indexes.strip() + ");")
-    else:
-        print("  auto& [")
-        print(indexes)
-        print("  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.")
-        print("")
-        print("  return ::boost::pfr::detail::make_tuple_of_references(")
-        print(indexes)
-        print("  );")
+    print("constexpr auto structure_member_getter_setter(T& val, size_t_<" + str(i + 1) + ">) noexcept {")
+    print("  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {")
 
+    def print_structure_binding():
+        print("      static_assert(is() < " + str(i + 1) + ");")
+        if len(indexes) == 1:
+            print("      auto& [" + (",".join(indexes[0])) + "] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.")
+        else:
+            print("      auto& [")
+            print("        " + (",\n        ".join(map(lambda index_list: ",".join(index_list), indexes))))
+            print("      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.")
+
+    print_structure_binding()
+
+    index = 0
+    for index_list in indexes:
+        for index_name in index_list:
+            print("      if constexpr (is() == " + str(index) + ") { if constexpr (ref()) return (" + index_name + "); else return " + index_name + "; }")
+            index += 1
+
+    print("    }, [&val] (auto is, auto&& assign) {")
+
+    print_structure_binding()
+
+    index = 0
+    for index_list in indexes:
+        for index_name in index_list:
+            print("      if constexpr (is() == " + str(index) + ") { " + index_name + " = std::forward<decltype(assign)>(assign); }")
+            index += 1
+
+    print("    }")
+    print("  };")
     print("}\n")
 
 print(EPILOGUE)

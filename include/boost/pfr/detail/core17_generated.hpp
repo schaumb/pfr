@@ -23,1009 +23,11639 @@
 
 namespace boost { namespace pfr { namespace detail {
 
-template <class... Args>
-constexpr auto make_tuple_of_references(Args&&... args) noexcept {
-  return sequence_tuple::tuple<Args&...>{ args... };
-}
-
-template <class T>
-constexpr auto tie_as_tuple(T& /*val*/, size_t_<0>) noexcept {
-  return sequence_tuple::tuple<>{};
-}
-
-template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<1>, std::enable_if_t<std::is_class< std::remove_cv_t<T> >::value>* = 0) noexcept {
-  auto& [a] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a);
-}
-
-
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<1>, std::enable_if_t<!std::is_class< std::remove_cv_t<T> >::value>* = 0) noexcept {
-  return ::boost::pfr::detail::make_tuple_of_references( val );
+constexpr auto structure_member_getter_setter(T& val, size_t_<1>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 1);
+      auto& [a] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 1);
+      auto& [a] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
-
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<2>) noexcept {
-  auto& [a,b] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b);
+constexpr auto structure_member_getter_setter(T& val, size_t_<2>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 2);
+      auto& [a,b] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 2);
+      auto& [a,b] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<3>) noexcept {
-  auto& [a,b,c] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c);
+constexpr auto structure_member_getter_setter(T& val, size_t_<3>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 3);
+      auto& [a,b,c] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 3);
+      auto& [a,b,c] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<4>) noexcept {
-  auto& [a,b,c,d] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d);
+constexpr auto structure_member_getter_setter(T& val, size_t_<4>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 4);
+      auto& [a,b,c,d] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 4);
+      auto& [a,b,c,d] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<5>) noexcept {
-  auto& [a,b,c,d,e] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e);
+constexpr auto structure_member_getter_setter(T& val, size_t_<5>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 5);
+      auto& [a,b,c,d,e] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 5);
+      auto& [a,b,c,d,e] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<6>) noexcept {
-  auto& [a,b,c,d,e,f] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f);
+constexpr auto structure_member_getter_setter(T& val, size_t_<6>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 6);
+      auto& [a,b,c,d,e,f] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 6);
+      auto& [a,b,c,d,e,f] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<7>) noexcept {
-  auto& [a,b,c,d,e,f,g] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g);
+constexpr auto structure_member_getter_setter(T& val, size_t_<7>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 7);
+      auto& [a,b,c,d,e,f,g] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 7);
+      auto& [a,b,c,d,e,f,g] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<8>) noexcept {
-  auto& [a,b,c,d,e,f,g,h] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h);
+constexpr auto structure_member_getter_setter(T& val, size_t_<8>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 8);
+      auto& [a,b,c,d,e,f,g,h] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 8);
+      auto& [a,b,c,d,e,f,g,h] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<9>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j);
+constexpr auto structure_member_getter_setter(T& val, size_t_<9>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 9);
+      auto& [a,b,c,d,e,f,g,h,j] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 9);
+      auto& [a,b,c,d,e,f,g,h,j] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<10>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k);
+constexpr auto structure_member_getter_setter(T& val, size_t_<10>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 10);
+      auto& [a,b,c,d,e,f,g,h,j,k] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 10);
+      auto& [a,b,c,d,e,f,g,h,j,k] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<11>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l);
+constexpr auto structure_member_getter_setter(T& val, size_t_<11>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 11);
+      auto& [a,b,c,d,e,f,g,h,j,k,l] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 11);
+      auto& [a,b,c,d,e,f,g,h,j,k,l] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<12>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m);
+constexpr auto structure_member_getter_setter(T& val, size_t_<12>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 12);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 12);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<13>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n);
+constexpr auto structure_member_getter_setter(T& val, size_t_<13>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 13);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 13);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<14>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p);
+constexpr auto structure_member_getter_setter(T& val, size_t_<14>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 14);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 14);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<15>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q);
+constexpr auto structure_member_getter_setter(T& val, size_t_<15>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 15);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 15);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<16>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r);
+constexpr auto structure_member_getter_setter(T& val, size_t_<16>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 16);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 16);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<17>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s);
+constexpr auto structure_member_getter_setter(T& val, size_t_<17>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 17);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 17);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<18>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t);
+constexpr auto structure_member_getter_setter(T& val, size_t_<18>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 18);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 18);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<19>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u);
+constexpr auto structure_member_getter_setter(T& val, size_t_<19>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 19);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 19);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<20>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v);
+constexpr auto structure_member_getter_setter(T& val, size_t_<20>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 20);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 20);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<21>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w);
+constexpr auto structure_member_getter_setter(T& val, size_t_<21>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 21);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 21);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<22>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x);
+constexpr auto structure_member_getter_setter(T& val, size_t_<22>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 22);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 22);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<23>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y);
+constexpr auto structure_member_getter_setter(T& val, size_t_<23>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 23);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 23);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<24>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z);
+constexpr auto structure_member_getter_setter(T& val, size_t_<24>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 24);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 24);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<25>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A);
+constexpr auto structure_member_getter_setter(T& val, size_t_<25>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 25);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 25);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<26>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B);
+constexpr auto structure_member_getter_setter(T& val, size_t_<26>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 26);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 26);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<27>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C);
+constexpr auto structure_member_getter_setter(T& val, size_t_<27>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 27);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 27);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<28>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D);
+constexpr auto structure_member_getter_setter(T& val, size_t_<28>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 28);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 28);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<29>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E);
+constexpr auto structure_member_getter_setter(T& val, size_t_<29>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 29);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 29);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<30>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F);
+constexpr auto structure_member_getter_setter(T& val, size_t_<30>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 30);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 30);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<31>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G);
+constexpr auto structure_member_getter_setter(T& val, size_t_<31>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 31);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 31);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<32>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H);
+constexpr auto structure_member_getter_setter(T& val, size_t_<32>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 32);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 32);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<33>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J);
+constexpr auto structure_member_getter_setter(T& val, size_t_<33>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 33);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 33);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<34>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K);
+constexpr auto structure_member_getter_setter(T& val, size_t_<34>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 34);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 34);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<35>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L);
+constexpr auto structure_member_getter_setter(T& val, size_t_<35>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 35);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 35);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<36>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M);
+constexpr auto structure_member_getter_setter(T& val, size_t_<36>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 36);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 36);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<37>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N);
+constexpr auto structure_member_getter_setter(T& val, size_t_<37>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 37);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 37);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<38>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P);
+constexpr auto structure_member_getter_setter(T& val, size_t_<38>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 38);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 38);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<39>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q);
+constexpr auto structure_member_getter_setter(T& val, size_t_<39>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 39);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 39);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<40>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R);
+constexpr auto structure_member_getter_setter(T& val, size_t_<40>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 40);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 40);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<41>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S);
+constexpr auto structure_member_getter_setter(T& val, size_t_<41>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 41);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 41);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<42>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U);
+constexpr auto structure_member_getter_setter(T& val, size_t_<42>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 42);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 42);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<43>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V);
+constexpr auto structure_member_getter_setter(T& val, size_t_<43>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 43);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 43);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<44>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W);
+constexpr auto structure_member_getter_setter(T& val, size_t_<44>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 44);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 44);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<45>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X);
+constexpr auto structure_member_getter_setter(T& val, size_t_<45>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 45);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 45);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<46>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y);
+constexpr auto structure_member_getter_setter(T& val, size_t_<46>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 46);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 46);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<47>) noexcept {
-  auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-  return ::boost::pfr::detail::make_tuple_of_references(a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z);
+constexpr auto structure_member_getter_setter(T& val, size_t_<47>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 47);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 47);
+      auto& [a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<48>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<48>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 48);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 48);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<49>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<49>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 49);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 49);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<50>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<50>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 50);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 50);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<51>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<51>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 51);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 51);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<52>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<52>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 52);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 52);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<53>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<53>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 53);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 53);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<54>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<54>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 54);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 54);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<55>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<55>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 55);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 55);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<56>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<56>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 56);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 56);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<57>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<57>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 57);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 57);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<58>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<58>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 58);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 58);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<59>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<59>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 59);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 59);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<60>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<60>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 60);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 60);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<61>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<61>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 61);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 61);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<62>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<62>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 62);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 62);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<63>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<63>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 63);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 63);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<64>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<64>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 64);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 64);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<65>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<65>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 65);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 65);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<66>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<66>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 66);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 66);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<67>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<67>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 67);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 67);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<68>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<68>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 68);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 68);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<69>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<69>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 69);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+      if constexpr (is() == 68) { if constexpr (ref()) return (ax); else return ax; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 69);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 68) { ax = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<70>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<70>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 70);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+      if constexpr (is() == 68) { if constexpr (ref()) return (ax); else return ax; }
+      if constexpr (is() == 69) { if constexpr (ref()) return (ay); else return ay; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 70);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 68) { ax = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 69) { ay = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<71>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<71>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 71);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+      if constexpr (is() == 68) { if constexpr (ref()) return (ax); else return ax; }
+      if constexpr (is() == 69) { if constexpr (ref()) return (ay); else return ay; }
+      if constexpr (is() == 70) { if constexpr (ref()) return (az); else return az; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 71);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 68) { ax = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 69) { ay = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 70) { az = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<72>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<72>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 72);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+      if constexpr (is() == 68) { if constexpr (ref()) return (ax); else return ax; }
+      if constexpr (is() == 69) { if constexpr (ref()) return (ay); else return ay; }
+      if constexpr (is() == 70) { if constexpr (ref()) return (az); else return az; }
+      if constexpr (is() == 71) { if constexpr (ref()) return (aA); else return aA; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 72);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 68) { ax = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 69) { ay = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 70) { az = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 71) { aA = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<73>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<73>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 73);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+      if constexpr (is() == 68) { if constexpr (ref()) return (ax); else return ax; }
+      if constexpr (is() == 69) { if constexpr (ref()) return (ay); else return ay; }
+      if constexpr (is() == 70) { if constexpr (ref()) return (az); else return az; }
+      if constexpr (is() == 71) { if constexpr (ref()) return (aA); else return aA; }
+      if constexpr (is() == 72) { if constexpr (ref()) return (aB); else return aB; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 73);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 68) { ax = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 69) { ay = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 70) { az = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 71) { aA = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 72) { aB = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<74>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<74>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 74);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+      if constexpr (is() == 68) { if constexpr (ref()) return (ax); else return ax; }
+      if constexpr (is() == 69) { if constexpr (ref()) return (ay); else return ay; }
+      if constexpr (is() == 70) { if constexpr (ref()) return (az); else return az; }
+      if constexpr (is() == 71) { if constexpr (ref()) return (aA); else return aA; }
+      if constexpr (is() == 72) { if constexpr (ref()) return (aB); else return aB; }
+      if constexpr (is() == 73) { if constexpr (ref()) return (aC); else return aC; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 74);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 68) { ax = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 69) { ay = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 70) { az = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 71) { aA = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 72) { aB = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 73) { aC = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<75>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<75>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 75);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+      if constexpr (is() == 68) { if constexpr (ref()) return (ax); else return ax; }
+      if constexpr (is() == 69) { if constexpr (ref()) return (ay); else return ay; }
+      if constexpr (is() == 70) { if constexpr (ref()) return (az); else return az; }
+      if constexpr (is() == 71) { if constexpr (ref()) return (aA); else return aA; }
+      if constexpr (is() == 72) { if constexpr (ref()) return (aB); else return aB; }
+      if constexpr (is() == 73) { if constexpr (ref()) return (aC); else return aC; }
+      if constexpr (is() == 74) { if constexpr (ref()) return (aD); else return aD; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 75);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 68) { ax = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 69) { ay = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 70) { az = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 71) { aA = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 72) { aB = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 73) { aC = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 74) { aD = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<76>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<76>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 76);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+      if constexpr (is() == 68) { if constexpr (ref()) return (ax); else return ax; }
+      if constexpr (is() == 69) { if constexpr (ref()) return (ay); else return ay; }
+      if constexpr (is() == 70) { if constexpr (ref()) return (az); else return az; }
+      if constexpr (is() == 71) { if constexpr (ref()) return (aA); else return aA; }
+      if constexpr (is() == 72) { if constexpr (ref()) return (aB); else return aB; }
+      if constexpr (is() == 73) { if constexpr (ref()) return (aC); else return aC; }
+      if constexpr (is() == 74) { if constexpr (ref()) return (aD); else return aD; }
+      if constexpr (is() == 75) { if constexpr (ref()) return (aE); else return aE; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 76);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 68) { ax = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 69) { ay = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 70) { az = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 71) { aA = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 72) { aB = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 73) { aC = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 74) { aD = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 75) { aE = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<77>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<77>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 77);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+      if constexpr (is() == 68) { if constexpr (ref()) return (ax); else return ax; }
+      if constexpr (is() == 69) { if constexpr (ref()) return (ay); else return ay; }
+      if constexpr (is() == 70) { if constexpr (ref()) return (az); else return az; }
+      if constexpr (is() == 71) { if constexpr (ref()) return (aA); else return aA; }
+      if constexpr (is() == 72) { if constexpr (ref()) return (aB); else return aB; }
+      if constexpr (is() == 73) { if constexpr (ref()) return (aC); else return aC; }
+      if constexpr (is() == 74) { if constexpr (ref()) return (aD); else return aD; }
+      if constexpr (is() == 75) { if constexpr (ref()) return (aE); else return aE; }
+      if constexpr (is() == 76) { if constexpr (ref()) return (aF); else return aF; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 77);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 68) { ax = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 69) { ay = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 70) { az = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 71) { aA = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 72) { aB = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 73) { aC = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 74) { aD = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 75) { aE = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 76) { aF = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<78>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<78>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 78);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+      if constexpr (is() == 68) { if constexpr (ref()) return (ax); else return ax; }
+      if constexpr (is() == 69) { if constexpr (ref()) return (ay); else return ay; }
+      if constexpr (is() == 70) { if constexpr (ref()) return (az); else return az; }
+      if constexpr (is() == 71) { if constexpr (ref()) return (aA); else return aA; }
+      if constexpr (is() == 72) { if constexpr (ref()) return (aB); else return aB; }
+      if constexpr (is() == 73) { if constexpr (ref()) return (aC); else return aC; }
+      if constexpr (is() == 74) { if constexpr (ref()) return (aD); else return aD; }
+      if constexpr (is() == 75) { if constexpr (ref()) return (aE); else return aE; }
+      if constexpr (is() == 76) { if constexpr (ref()) return (aF); else return aF; }
+      if constexpr (is() == 77) { if constexpr (ref()) return (aG); else return aG; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 78);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 68) { ax = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 69) { ay = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 70) { az = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 71) { aA = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 72) { aB = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 73) { aC = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 74) { aD = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 75) { aE = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 76) { aF = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 77) { aG = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<79>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<79>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 79);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+      if constexpr (is() == 68) { if constexpr (ref()) return (ax); else return ax; }
+      if constexpr (is() == 69) { if constexpr (ref()) return (ay); else return ay; }
+      if constexpr (is() == 70) { if constexpr (ref()) return (az); else return az; }
+      if constexpr (is() == 71) { if constexpr (ref()) return (aA); else return aA; }
+      if constexpr (is() == 72) { if constexpr (ref()) return (aB); else return aB; }
+      if constexpr (is() == 73) { if constexpr (ref()) return (aC); else return aC; }
+      if constexpr (is() == 74) { if constexpr (ref()) return (aD); else return aD; }
+      if constexpr (is() == 75) { if constexpr (ref()) return (aE); else return aE; }
+      if constexpr (is() == 76) { if constexpr (ref()) return (aF); else return aF; }
+      if constexpr (is() == 77) { if constexpr (ref()) return (aG); else return aG; }
+      if constexpr (is() == 78) { if constexpr (ref()) return (aH); else return aH; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 79);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 68) { ax = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 69) { ay = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 70) { az = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 71) { aA = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 72) { aB = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 73) { aC = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 74) { aD = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 75) { aE = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 76) { aF = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 77) { aG = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 78) { aH = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<80>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<80>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 80);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+      if constexpr (is() == 68) { if constexpr (ref()) return (ax); else return ax; }
+      if constexpr (is() == 69) { if constexpr (ref()) return (ay); else return ay; }
+      if constexpr (is() == 70) { if constexpr (ref()) return (az); else return az; }
+      if constexpr (is() == 71) { if constexpr (ref()) return (aA); else return aA; }
+      if constexpr (is() == 72) { if constexpr (ref()) return (aB); else return aB; }
+      if constexpr (is() == 73) { if constexpr (ref()) return (aC); else return aC; }
+      if constexpr (is() == 74) { if constexpr (ref()) return (aD); else return aD; }
+      if constexpr (is() == 75) { if constexpr (ref()) return (aE); else return aE; }
+      if constexpr (is() == 76) { if constexpr (ref()) return (aF); else return aF; }
+      if constexpr (is() == 77) { if constexpr (ref()) return (aG); else return aG; }
+      if constexpr (is() == 78) { if constexpr (ref()) return (aH); else return aH; }
+      if constexpr (is() == 79) { if constexpr (ref()) return (aJ); else return aJ; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 80);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 68) { ax = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 69) { ay = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 70) { az = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 71) { aA = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 72) { aB = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 73) { aC = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 74) { aD = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 75) { aE = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 76) { aF = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 77) { aG = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 78) { aH = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 79) { aJ = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<81>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<81>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 81);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+      if constexpr (is() == 68) { if constexpr (ref()) return (ax); else return ax; }
+      if constexpr (is() == 69) { if constexpr (ref()) return (ay); else return ay; }
+      if constexpr (is() == 70) { if constexpr (ref()) return (az); else return az; }
+      if constexpr (is() == 71) { if constexpr (ref()) return (aA); else return aA; }
+      if constexpr (is() == 72) { if constexpr (ref()) return (aB); else return aB; }
+      if constexpr (is() == 73) { if constexpr (ref()) return (aC); else return aC; }
+      if constexpr (is() == 74) { if constexpr (ref()) return (aD); else return aD; }
+      if constexpr (is() == 75) { if constexpr (ref()) return (aE); else return aE; }
+      if constexpr (is() == 76) { if constexpr (ref()) return (aF); else return aF; }
+      if constexpr (is() == 77) { if constexpr (ref()) return (aG); else return aG; }
+      if constexpr (is() == 78) { if constexpr (ref()) return (aH); else return aH; }
+      if constexpr (is() == 79) { if constexpr (ref()) return (aJ); else return aJ; }
+      if constexpr (is() == 80) { if constexpr (ref()) return (aK); else return aK; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 81);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 68) { ax = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 69) { ay = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 70) { az = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 71) { aA = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 72) { aB = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 73) { aC = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 74) { aD = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 75) { aE = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 76) { aF = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 77) { aG = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 78) { aH = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 79) { aJ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 80) { aK = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<82>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<82>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 82);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+      if constexpr (is() == 68) { if constexpr (ref()) return (ax); else return ax; }
+      if constexpr (is() == 69) { if constexpr (ref()) return (ay); else return ay; }
+      if constexpr (is() == 70) { if constexpr (ref()) return (az); else return az; }
+      if constexpr (is() == 71) { if constexpr (ref()) return (aA); else return aA; }
+      if constexpr (is() == 72) { if constexpr (ref()) return (aB); else return aB; }
+      if constexpr (is() == 73) { if constexpr (ref()) return (aC); else return aC; }
+      if constexpr (is() == 74) { if constexpr (ref()) return (aD); else return aD; }
+      if constexpr (is() == 75) { if constexpr (ref()) return (aE); else return aE; }
+      if constexpr (is() == 76) { if constexpr (ref()) return (aF); else return aF; }
+      if constexpr (is() == 77) { if constexpr (ref()) return (aG); else return aG; }
+      if constexpr (is() == 78) { if constexpr (ref()) return (aH); else return aH; }
+      if constexpr (is() == 79) { if constexpr (ref()) return (aJ); else return aJ; }
+      if constexpr (is() == 80) { if constexpr (ref()) return (aK); else return aK; }
+      if constexpr (is() == 81) { if constexpr (ref()) return (aL); else return aL; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 82);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 68) { ax = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 69) { ay = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 70) { az = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 71) { aA = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 72) { aB = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 73) { aC = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 74) { aD = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 75) { aE = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 76) { aF = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 77) { aG = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 78) { aH = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 79) { aJ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 80) { aK = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 81) { aL = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<83>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<83>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 83);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+      if constexpr (is() == 68) { if constexpr (ref()) return (ax); else return ax; }
+      if constexpr (is() == 69) { if constexpr (ref()) return (ay); else return ay; }
+      if constexpr (is() == 70) { if constexpr (ref()) return (az); else return az; }
+      if constexpr (is() == 71) { if constexpr (ref()) return (aA); else return aA; }
+      if constexpr (is() == 72) { if constexpr (ref()) return (aB); else return aB; }
+      if constexpr (is() == 73) { if constexpr (ref()) return (aC); else return aC; }
+      if constexpr (is() == 74) { if constexpr (ref()) return (aD); else return aD; }
+      if constexpr (is() == 75) { if constexpr (ref()) return (aE); else return aE; }
+      if constexpr (is() == 76) { if constexpr (ref()) return (aF); else return aF; }
+      if constexpr (is() == 77) { if constexpr (ref()) return (aG); else return aG; }
+      if constexpr (is() == 78) { if constexpr (ref()) return (aH); else return aH; }
+      if constexpr (is() == 79) { if constexpr (ref()) return (aJ); else return aJ; }
+      if constexpr (is() == 80) { if constexpr (ref()) return (aK); else return aK; }
+      if constexpr (is() == 81) { if constexpr (ref()) return (aL); else return aL; }
+      if constexpr (is() == 82) { if constexpr (ref()) return (aM); else return aM; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 83);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 68) { ax = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 69) { ay = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 70) { az = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 71) { aA = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 72) { aB = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 73) { aC = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 74) { aD = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 75) { aE = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 76) { aF = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 77) { aG = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 78) { aH = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 79) { aJ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 80) { aK = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 81) { aL = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 82) { aM = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<84>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<84>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 84);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+      if constexpr (is() == 68) { if constexpr (ref()) return (ax); else return ax; }
+      if constexpr (is() == 69) { if constexpr (ref()) return (ay); else return ay; }
+      if constexpr (is() == 70) { if constexpr (ref()) return (az); else return az; }
+      if constexpr (is() == 71) { if constexpr (ref()) return (aA); else return aA; }
+      if constexpr (is() == 72) { if constexpr (ref()) return (aB); else return aB; }
+      if constexpr (is() == 73) { if constexpr (ref()) return (aC); else return aC; }
+      if constexpr (is() == 74) { if constexpr (ref()) return (aD); else return aD; }
+      if constexpr (is() == 75) { if constexpr (ref()) return (aE); else return aE; }
+      if constexpr (is() == 76) { if constexpr (ref()) return (aF); else return aF; }
+      if constexpr (is() == 77) { if constexpr (ref()) return (aG); else return aG; }
+      if constexpr (is() == 78) { if constexpr (ref()) return (aH); else return aH; }
+      if constexpr (is() == 79) { if constexpr (ref()) return (aJ); else return aJ; }
+      if constexpr (is() == 80) { if constexpr (ref()) return (aK); else return aK; }
+      if constexpr (is() == 81) { if constexpr (ref()) return (aL); else return aL; }
+      if constexpr (is() == 82) { if constexpr (ref()) return (aM); else return aM; }
+      if constexpr (is() == 83) { if constexpr (ref()) return (aN); else return aN; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 84);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 68) { ax = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 69) { ay = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 70) { az = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 71) { aA = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 72) { aB = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 73) { aC = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 74) { aD = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 75) { aE = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 76) { aF = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 77) { aG = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 78) { aH = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 79) { aJ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 80) { aK = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 81) { aL = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 82) { aM = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 83) { aN = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<85>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<85>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 85);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+      if constexpr (is() == 68) { if constexpr (ref()) return (ax); else return ax; }
+      if constexpr (is() == 69) { if constexpr (ref()) return (ay); else return ay; }
+      if constexpr (is() == 70) { if constexpr (ref()) return (az); else return az; }
+      if constexpr (is() == 71) { if constexpr (ref()) return (aA); else return aA; }
+      if constexpr (is() == 72) { if constexpr (ref()) return (aB); else return aB; }
+      if constexpr (is() == 73) { if constexpr (ref()) return (aC); else return aC; }
+      if constexpr (is() == 74) { if constexpr (ref()) return (aD); else return aD; }
+      if constexpr (is() == 75) { if constexpr (ref()) return (aE); else return aE; }
+      if constexpr (is() == 76) { if constexpr (ref()) return (aF); else return aF; }
+      if constexpr (is() == 77) { if constexpr (ref()) return (aG); else return aG; }
+      if constexpr (is() == 78) { if constexpr (ref()) return (aH); else return aH; }
+      if constexpr (is() == 79) { if constexpr (ref()) return (aJ); else return aJ; }
+      if constexpr (is() == 80) { if constexpr (ref()) return (aK); else return aK; }
+      if constexpr (is() == 81) { if constexpr (ref()) return (aL); else return aL; }
+      if constexpr (is() == 82) { if constexpr (ref()) return (aM); else return aM; }
+      if constexpr (is() == 83) { if constexpr (ref()) return (aN); else return aN; }
+      if constexpr (is() == 84) { if constexpr (ref()) return (aP); else return aP; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 85);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 68) { ax = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 69) { ay = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 70) { az = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 71) { aA = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 72) { aB = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 73) { aC = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 74) { aD = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 75) { aE = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 76) { aF = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 77) { aG = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 78) { aH = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 79) { aJ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 80) { aK = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 81) { aL = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 82) { aM = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 83) { aN = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 84) { aP = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<86>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<86>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 86);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+      if constexpr (is() == 68) { if constexpr (ref()) return (ax); else return ax; }
+      if constexpr (is() == 69) { if constexpr (ref()) return (ay); else return ay; }
+      if constexpr (is() == 70) { if constexpr (ref()) return (az); else return az; }
+      if constexpr (is() == 71) { if constexpr (ref()) return (aA); else return aA; }
+      if constexpr (is() == 72) { if constexpr (ref()) return (aB); else return aB; }
+      if constexpr (is() == 73) { if constexpr (ref()) return (aC); else return aC; }
+      if constexpr (is() == 74) { if constexpr (ref()) return (aD); else return aD; }
+      if constexpr (is() == 75) { if constexpr (ref()) return (aE); else return aE; }
+      if constexpr (is() == 76) { if constexpr (ref()) return (aF); else return aF; }
+      if constexpr (is() == 77) { if constexpr (ref()) return (aG); else return aG; }
+      if constexpr (is() == 78) { if constexpr (ref()) return (aH); else return aH; }
+      if constexpr (is() == 79) { if constexpr (ref()) return (aJ); else return aJ; }
+      if constexpr (is() == 80) { if constexpr (ref()) return (aK); else return aK; }
+      if constexpr (is() == 81) { if constexpr (ref()) return (aL); else return aL; }
+      if constexpr (is() == 82) { if constexpr (ref()) return (aM); else return aM; }
+      if constexpr (is() == 83) { if constexpr (ref()) return (aN); else return aN; }
+      if constexpr (is() == 84) { if constexpr (ref()) return (aP); else return aP; }
+      if constexpr (is() == 85) { if constexpr (ref()) return (aQ); else return aQ; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 86);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 68) { ax = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 69) { ay = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 70) { az = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 71) { aA = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 72) { aB = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 73) { aC = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 74) { aD = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 75) { aE = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 76) { aF = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 77) { aG = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 78) { aH = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 79) { aJ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 80) { aK = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 81) { aL = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 82) { aM = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 83) { aN = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 84) { aP = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 85) { aQ = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<87>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<87>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 87);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+      if constexpr (is() == 68) { if constexpr (ref()) return (ax); else return ax; }
+      if constexpr (is() == 69) { if constexpr (ref()) return (ay); else return ay; }
+      if constexpr (is() == 70) { if constexpr (ref()) return (az); else return az; }
+      if constexpr (is() == 71) { if constexpr (ref()) return (aA); else return aA; }
+      if constexpr (is() == 72) { if constexpr (ref()) return (aB); else return aB; }
+      if constexpr (is() == 73) { if constexpr (ref()) return (aC); else return aC; }
+      if constexpr (is() == 74) { if constexpr (ref()) return (aD); else return aD; }
+      if constexpr (is() == 75) { if constexpr (ref()) return (aE); else return aE; }
+      if constexpr (is() == 76) { if constexpr (ref()) return (aF); else return aF; }
+      if constexpr (is() == 77) { if constexpr (ref()) return (aG); else return aG; }
+      if constexpr (is() == 78) { if constexpr (ref()) return (aH); else return aH; }
+      if constexpr (is() == 79) { if constexpr (ref()) return (aJ); else return aJ; }
+      if constexpr (is() == 80) { if constexpr (ref()) return (aK); else return aK; }
+      if constexpr (is() == 81) { if constexpr (ref()) return (aL); else return aL; }
+      if constexpr (is() == 82) { if constexpr (ref()) return (aM); else return aM; }
+      if constexpr (is() == 83) { if constexpr (ref()) return (aN); else return aN; }
+      if constexpr (is() == 84) { if constexpr (ref()) return (aP); else return aP; }
+      if constexpr (is() == 85) { if constexpr (ref()) return (aQ); else return aQ; }
+      if constexpr (is() == 86) { if constexpr (ref()) return (aR); else return aR; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 87);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 68) { ax = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 69) { ay = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 70) { az = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 71) { aA = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 72) { aB = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 73) { aC = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 74) { aD = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 75) { aE = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 76) { aF = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 77) { aG = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 78) { aH = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 79) { aJ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 80) { aK = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 81) { aL = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 82) { aM = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 83) { aN = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 84) { aP = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 85) { aQ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 86) { aR = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<88>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<88>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 88);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+      if constexpr (is() == 68) { if constexpr (ref()) return (ax); else return ax; }
+      if constexpr (is() == 69) { if constexpr (ref()) return (ay); else return ay; }
+      if constexpr (is() == 70) { if constexpr (ref()) return (az); else return az; }
+      if constexpr (is() == 71) { if constexpr (ref()) return (aA); else return aA; }
+      if constexpr (is() == 72) { if constexpr (ref()) return (aB); else return aB; }
+      if constexpr (is() == 73) { if constexpr (ref()) return (aC); else return aC; }
+      if constexpr (is() == 74) { if constexpr (ref()) return (aD); else return aD; }
+      if constexpr (is() == 75) { if constexpr (ref()) return (aE); else return aE; }
+      if constexpr (is() == 76) { if constexpr (ref()) return (aF); else return aF; }
+      if constexpr (is() == 77) { if constexpr (ref()) return (aG); else return aG; }
+      if constexpr (is() == 78) { if constexpr (ref()) return (aH); else return aH; }
+      if constexpr (is() == 79) { if constexpr (ref()) return (aJ); else return aJ; }
+      if constexpr (is() == 80) { if constexpr (ref()) return (aK); else return aK; }
+      if constexpr (is() == 81) { if constexpr (ref()) return (aL); else return aL; }
+      if constexpr (is() == 82) { if constexpr (ref()) return (aM); else return aM; }
+      if constexpr (is() == 83) { if constexpr (ref()) return (aN); else return aN; }
+      if constexpr (is() == 84) { if constexpr (ref()) return (aP); else return aP; }
+      if constexpr (is() == 85) { if constexpr (ref()) return (aQ); else return aQ; }
+      if constexpr (is() == 86) { if constexpr (ref()) return (aR); else return aR; }
+      if constexpr (is() == 87) { if constexpr (ref()) return (aS); else return aS; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 88);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 68) { ax = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 69) { ay = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 70) { az = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 71) { aA = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 72) { aB = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 73) { aC = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 74) { aD = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 75) { aE = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 76) { aF = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 77) { aG = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 78) { aH = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 79) { aJ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 80) { aK = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 81) { aL = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 82) { aM = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 83) { aN = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 84) { aP = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 85) { aQ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 86) { aR = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 87) { aS = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<89>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<89>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 89);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+      if constexpr (is() == 68) { if constexpr (ref()) return (ax); else return ax; }
+      if constexpr (is() == 69) { if constexpr (ref()) return (ay); else return ay; }
+      if constexpr (is() == 70) { if constexpr (ref()) return (az); else return az; }
+      if constexpr (is() == 71) { if constexpr (ref()) return (aA); else return aA; }
+      if constexpr (is() == 72) { if constexpr (ref()) return (aB); else return aB; }
+      if constexpr (is() == 73) { if constexpr (ref()) return (aC); else return aC; }
+      if constexpr (is() == 74) { if constexpr (ref()) return (aD); else return aD; }
+      if constexpr (is() == 75) { if constexpr (ref()) return (aE); else return aE; }
+      if constexpr (is() == 76) { if constexpr (ref()) return (aF); else return aF; }
+      if constexpr (is() == 77) { if constexpr (ref()) return (aG); else return aG; }
+      if constexpr (is() == 78) { if constexpr (ref()) return (aH); else return aH; }
+      if constexpr (is() == 79) { if constexpr (ref()) return (aJ); else return aJ; }
+      if constexpr (is() == 80) { if constexpr (ref()) return (aK); else return aK; }
+      if constexpr (is() == 81) { if constexpr (ref()) return (aL); else return aL; }
+      if constexpr (is() == 82) { if constexpr (ref()) return (aM); else return aM; }
+      if constexpr (is() == 83) { if constexpr (ref()) return (aN); else return aN; }
+      if constexpr (is() == 84) { if constexpr (ref()) return (aP); else return aP; }
+      if constexpr (is() == 85) { if constexpr (ref()) return (aQ); else return aQ; }
+      if constexpr (is() == 86) { if constexpr (ref()) return (aR); else return aR; }
+      if constexpr (is() == 87) { if constexpr (ref()) return (aS); else return aS; }
+      if constexpr (is() == 88) { if constexpr (ref()) return (aU); else return aU; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 89);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 68) { ax = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 69) { ay = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 70) { az = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 71) { aA = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 72) { aB = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 73) { aC = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 74) { aD = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 75) { aE = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 76) { aF = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 77) { aG = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 78) { aH = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 79) { aJ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 80) { aK = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 81) { aL = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 82) { aM = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 83) { aN = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 84) { aP = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 85) { aQ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 86) { aR = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 87) { aS = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 88) { aU = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<90>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<90>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 90);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+      if constexpr (is() == 68) { if constexpr (ref()) return (ax); else return ax; }
+      if constexpr (is() == 69) { if constexpr (ref()) return (ay); else return ay; }
+      if constexpr (is() == 70) { if constexpr (ref()) return (az); else return az; }
+      if constexpr (is() == 71) { if constexpr (ref()) return (aA); else return aA; }
+      if constexpr (is() == 72) { if constexpr (ref()) return (aB); else return aB; }
+      if constexpr (is() == 73) { if constexpr (ref()) return (aC); else return aC; }
+      if constexpr (is() == 74) { if constexpr (ref()) return (aD); else return aD; }
+      if constexpr (is() == 75) { if constexpr (ref()) return (aE); else return aE; }
+      if constexpr (is() == 76) { if constexpr (ref()) return (aF); else return aF; }
+      if constexpr (is() == 77) { if constexpr (ref()) return (aG); else return aG; }
+      if constexpr (is() == 78) { if constexpr (ref()) return (aH); else return aH; }
+      if constexpr (is() == 79) { if constexpr (ref()) return (aJ); else return aJ; }
+      if constexpr (is() == 80) { if constexpr (ref()) return (aK); else return aK; }
+      if constexpr (is() == 81) { if constexpr (ref()) return (aL); else return aL; }
+      if constexpr (is() == 82) { if constexpr (ref()) return (aM); else return aM; }
+      if constexpr (is() == 83) { if constexpr (ref()) return (aN); else return aN; }
+      if constexpr (is() == 84) { if constexpr (ref()) return (aP); else return aP; }
+      if constexpr (is() == 85) { if constexpr (ref()) return (aQ); else return aQ; }
+      if constexpr (is() == 86) { if constexpr (ref()) return (aR); else return aR; }
+      if constexpr (is() == 87) { if constexpr (ref()) return (aS); else return aS; }
+      if constexpr (is() == 88) { if constexpr (ref()) return (aU); else return aU; }
+      if constexpr (is() == 89) { if constexpr (ref()) return (aV); else return aV; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 90);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 68) { ax = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 69) { ay = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 70) { az = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 71) { aA = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 72) { aB = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 73) { aC = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 74) { aD = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 75) { aE = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 76) { aF = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 77) { aG = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 78) { aH = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 79) { aJ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 80) { aK = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 81) { aL = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 82) { aM = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 83) { aN = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 84) { aP = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 85) { aQ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 86) { aR = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 87) { aS = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 88) { aU = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 89) { aV = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<91>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<91>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 91);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+      if constexpr (is() == 68) { if constexpr (ref()) return (ax); else return ax; }
+      if constexpr (is() == 69) { if constexpr (ref()) return (ay); else return ay; }
+      if constexpr (is() == 70) { if constexpr (ref()) return (az); else return az; }
+      if constexpr (is() == 71) { if constexpr (ref()) return (aA); else return aA; }
+      if constexpr (is() == 72) { if constexpr (ref()) return (aB); else return aB; }
+      if constexpr (is() == 73) { if constexpr (ref()) return (aC); else return aC; }
+      if constexpr (is() == 74) { if constexpr (ref()) return (aD); else return aD; }
+      if constexpr (is() == 75) { if constexpr (ref()) return (aE); else return aE; }
+      if constexpr (is() == 76) { if constexpr (ref()) return (aF); else return aF; }
+      if constexpr (is() == 77) { if constexpr (ref()) return (aG); else return aG; }
+      if constexpr (is() == 78) { if constexpr (ref()) return (aH); else return aH; }
+      if constexpr (is() == 79) { if constexpr (ref()) return (aJ); else return aJ; }
+      if constexpr (is() == 80) { if constexpr (ref()) return (aK); else return aK; }
+      if constexpr (is() == 81) { if constexpr (ref()) return (aL); else return aL; }
+      if constexpr (is() == 82) { if constexpr (ref()) return (aM); else return aM; }
+      if constexpr (is() == 83) { if constexpr (ref()) return (aN); else return aN; }
+      if constexpr (is() == 84) { if constexpr (ref()) return (aP); else return aP; }
+      if constexpr (is() == 85) { if constexpr (ref()) return (aQ); else return aQ; }
+      if constexpr (is() == 86) { if constexpr (ref()) return (aR); else return aR; }
+      if constexpr (is() == 87) { if constexpr (ref()) return (aS); else return aS; }
+      if constexpr (is() == 88) { if constexpr (ref()) return (aU); else return aU; }
+      if constexpr (is() == 89) { if constexpr (ref()) return (aV); else return aV; }
+      if constexpr (is() == 90) { if constexpr (ref()) return (aW); else return aW; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 91);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 68) { ax = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 69) { ay = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 70) { az = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 71) { aA = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 72) { aB = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 73) { aC = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 74) { aD = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 75) { aE = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 76) { aF = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 77) { aG = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 78) { aH = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 79) { aJ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 80) { aK = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 81) { aL = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 82) { aM = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 83) { aN = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 84) { aP = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 85) { aQ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 86) { aR = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 87) { aS = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 88) { aU = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 89) { aV = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 90) { aW = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<92>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<92>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 92);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+      if constexpr (is() == 68) { if constexpr (ref()) return (ax); else return ax; }
+      if constexpr (is() == 69) { if constexpr (ref()) return (ay); else return ay; }
+      if constexpr (is() == 70) { if constexpr (ref()) return (az); else return az; }
+      if constexpr (is() == 71) { if constexpr (ref()) return (aA); else return aA; }
+      if constexpr (is() == 72) { if constexpr (ref()) return (aB); else return aB; }
+      if constexpr (is() == 73) { if constexpr (ref()) return (aC); else return aC; }
+      if constexpr (is() == 74) { if constexpr (ref()) return (aD); else return aD; }
+      if constexpr (is() == 75) { if constexpr (ref()) return (aE); else return aE; }
+      if constexpr (is() == 76) { if constexpr (ref()) return (aF); else return aF; }
+      if constexpr (is() == 77) { if constexpr (ref()) return (aG); else return aG; }
+      if constexpr (is() == 78) { if constexpr (ref()) return (aH); else return aH; }
+      if constexpr (is() == 79) { if constexpr (ref()) return (aJ); else return aJ; }
+      if constexpr (is() == 80) { if constexpr (ref()) return (aK); else return aK; }
+      if constexpr (is() == 81) { if constexpr (ref()) return (aL); else return aL; }
+      if constexpr (is() == 82) { if constexpr (ref()) return (aM); else return aM; }
+      if constexpr (is() == 83) { if constexpr (ref()) return (aN); else return aN; }
+      if constexpr (is() == 84) { if constexpr (ref()) return (aP); else return aP; }
+      if constexpr (is() == 85) { if constexpr (ref()) return (aQ); else return aQ; }
+      if constexpr (is() == 86) { if constexpr (ref()) return (aR); else return aR; }
+      if constexpr (is() == 87) { if constexpr (ref()) return (aS); else return aS; }
+      if constexpr (is() == 88) { if constexpr (ref()) return (aU); else return aU; }
+      if constexpr (is() == 89) { if constexpr (ref()) return (aV); else return aV; }
+      if constexpr (is() == 90) { if constexpr (ref()) return (aW); else return aW; }
+      if constexpr (is() == 91) { if constexpr (ref()) return (aX); else return aX; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 92);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 68) { ax = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 69) { ay = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 70) { az = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 71) { aA = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 72) { aB = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 73) { aC = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 74) { aD = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 75) { aE = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 76) { aF = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 77) { aG = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 78) { aH = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 79) { aJ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 80) { aK = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 81) { aL = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 82) { aM = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 83) { aN = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 84) { aP = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 85) { aQ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 86) { aR = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 87) { aS = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 88) { aU = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 89) { aV = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 90) { aW = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 91) { aX = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<93>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX,aY
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX,aY
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<93>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 93);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX,aY
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+      if constexpr (is() == 68) { if constexpr (ref()) return (ax); else return ax; }
+      if constexpr (is() == 69) { if constexpr (ref()) return (ay); else return ay; }
+      if constexpr (is() == 70) { if constexpr (ref()) return (az); else return az; }
+      if constexpr (is() == 71) { if constexpr (ref()) return (aA); else return aA; }
+      if constexpr (is() == 72) { if constexpr (ref()) return (aB); else return aB; }
+      if constexpr (is() == 73) { if constexpr (ref()) return (aC); else return aC; }
+      if constexpr (is() == 74) { if constexpr (ref()) return (aD); else return aD; }
+      if constexpr (is() == 75) { if constexpr (ref()) return (aE); else return aE; }
+      if constexpr (is() == 76) { if constexpr (ref()) return (aF); else return aF; }
+      if constexpr (is() == 77) { if constexpr (ref()) return (aG); else return aG; }
+      if constexpr (is() == 78) { if constexpr (ref()) return (aH); else return aH; }
+      if constexpr (is() == 79) { if constexpr (ref()) return (aJ); else return aJ; }
+      if constexpr (is() == 80) { if constexpr (ref()) return (aK); else return aK; }
+      if constexpr (is() == 81) { if constexpr (ref()) return (aL); else return aL; }
+      if constexpr (is() == 82) { if constexpr (ref()) return (aM); else return aM; }
+      if constexpr (is() == 83) { if constexpr (ref()) return (aN); else return aN; }
+      if constexpr (is() == 84) { if constexpr (ref()) return (aP); else return aP; }
+      if constexpr (is() == 85) { if constexpr (ref()) return (aQ); else return aQ; }
+      if constexpr (is() == 86) { if constexpr (ref()) return (aR); else return aR; }
+      if constexpr (is() == 87) { if constexpr (ref()) return (aS); else return aS; }
+      if constexpr (is() == 88) { if constexpr (ref()) return (aU); else return aU; }
+      if constexpr (is() == 89) { if constexpr (ref()) return (aV); else return aV; }
+      if constexpr (is() == 90) { if constexpr (ref()) return (aW); else return aW; }
+      if constexpr (is() == 91) { if constexpr (ref()) return (aX); else return aX; }
+      if constexpr (is() == 92) { if constexpr (ref()) return (aY); else return aY; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 93);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX,aY
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 68) { ax = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 69) { ay = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 70) { az = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 71) { aA = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 72) { aB = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 73) { aC = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 74) { aD = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 75) { aE = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 76) { aF = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 77) { aG = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 78) { aH = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 79) { aJ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 80) { aK = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 81) { aL = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 82) { aM = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 83) { aN = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 84) { aP = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 85) { aQ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 86) { aR = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 87) { aS = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 88) { aU = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 89) { aV = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 90) { aW = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 91) { aX = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 92) { aY = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<94>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX,aY,aZ
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX,aY,aZ
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<94>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 94);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX,aY,aZ
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+      if constexpr (is() == 68) { if constexpr (ref()) return (ax); else return ax; }
+      if constexpr (is() == 69) { if constexpr (ref()) return (ay); else return ay; }
+      if constexpr (is() == 70) { if constexpr (ref()) return (az); else return az; }
+      if constexpr (is() == 71) { if constexpr (ref()) return (aA); else return aA; }
+      if constexpr (is() == 72) { if constexpr (ref()) return (aB); else return aB; }
+      if constexpr (is() == 73) { if constexpr (ref()) return (aC); else return aC; }
+      if constexpr (is() == 74) { if constexpr (ref()) return (aD); else return aD; }
+      if constexpr (is() == 75) { if constexpr (ref()) return (aE); else return aE; }
+      if constexpr (is() == 76) { if constexpr (ref()) return (aF); else return aF; }
+      if constexpr (is() == 77) { if constexpr (ref()) return (aG); else return aG; }
+      if constexpr (is() == 78) { if constexpr (ref()) return (aH); else return aH; }
+      if constexpr (is() == 79) { if constexpr (ref()) return (aJ); else return aJ; }
+      if constexpr (is() == 80) { if constexpr (ref()) return (aK); else return aK; }
+      if constexpr (is() == 81) { if constexpr (ref()) return (aL); else return aL; }
+      if constexpr (is() == 82) { if constexpr (ref()) return (aM); else return aM; }
+      if constexpr (is() == 83) { if constexpr (ref()) return (aN); else return aN; }
+      if constexpr (is() == 84) { if constexpr (ref()) return (aP); else return aP; }
+      if constexpr (is() == 85) { if constexpr (ref()) return (aQ); else return aQ; }
+      if constexpr (is() == 86) { if constexpr (ref()) return (aR); else return aR; }
+      if constexpr (is() == 87) { if constexpr (ref()) return (aS); else return aS; }
+      if constexpr (is() == 88) { if constexpr (ref()) return (aU); else return aU; }
+      if constexpr (is() == 89) { if constexpr (ref()) return (aV); else return aV; }
+      if constexpr (is() == 90) { if constexpr (ref()) return (aW); else return aW; }
+      if constexpr (is() == 91) { if constexpr (ref()) return (aX); else return aX; }
+      if constexpr (is() == 92) { if constexpr (ref()) return (aY); else return aY; }
+      if constexpr (is() == 93) { if constexpr (ref()) return (aZ); else return aZ; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 94);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX,aY,aZ
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 68) { ax = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 69) { ay = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 70) { az = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 71) { aA = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 72) { aB = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 73) { aC = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 74) { aD = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 75) { aE = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 76) { aF = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 77) { aG = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 78) { aH = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 79) { aJ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 80) { aK = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 81) { aL = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 82) { aM = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 83) { aN = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 84) { aP = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 85) { aQ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 86) { aR = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 87) { aS = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 88) { aU = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 89) { aV = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 90) { aW = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 91) { aX = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 92) { aY = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 93) { aZ = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<95>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX,aY,aZ,
-    ba
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX,aY,aZ,
-    ba
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<95>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 95);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX,aY,aZ,
+        ba
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+      if constexpr (is() == 68) { if constexpr (ref()) return (ax); else return ax; }
+      if constexpr (is() == 69) { if constexpr (ref()) return (ay); else return ay; }
+      if constexpr (is() == 70) { if constexpr (ref()) return (az); else return az; }
+      if constexpr (is() == 71) { if constexpr (ref()) return (aA); else return aA; }
+      if constexpr (is() == 72) { if constexpr (ref()) return (aB); else return aB; }
+      if constexpr (is() == 73) { if constexpr (ref()) return (aC); else return aC; }
+      if constexpr (is() == 74) { if constexpr (ref()) return (aD); else return aD; }
+      if constexpr (is() == 75) { if constexpr (ref()) return (aE); else return aE; }
+      if constexpr (is() == 76) { if constexpr (ref()) return (aF); else return aF; }
+      if constexpr (is() == 77) { if constexpr (ref()) return (aG); else return aG; }
+      if constexpr (is() == 78) { if constexpr (ref()) return (aH); else return aH; }
+      if constexpr (is() == 79) { if constexpr (ref()) return (aJ); else return aJ; }
+      if constexpr (is() == 80) { if constexpr (ref()) return (aK); else return aK; }
+      if constexpr (is() == 81) { if constexpr (ref()) return (aL); else return aL; }
+      if constexpr (is() == 82) { if constexpr (ref()) return (aM); else return aM; }
+      if constexpr (is() == 83) { if constexpr (ref()) return (aN); else return aN; }
+      if constexpr (is() == 84) { if constexpr (ref()) return (aP); else return aP; }
+      if constexpr (is() == 85) { if constexpr (ref()) return (aQ); else return aQ; }
+      if constexpr (is() == 86) { if constexpr (ref()) return (aR); else return aR; }
+      if constexpr (is() == 87) { if constexpr (ref()) return (aS); else return aS; }
+      if constexpr (is() == 88) { if constexpr (ref()) return (aU); else return aU; }
+      if constexpr (is() == 89) { if constexpr (ref()) return (aV); else return aV; }
+      if constexpr (is() == 90) { if constexpr (ref()) return (aW); else return aW; }
+      if constexpr (is() == 91) { if constexpr (ref()) return (aX); else return aX; }
+      if constexpr (is() == 92) { if constexpr (ref()) return (aY); else return aY; }
+      if constexpr (is() == 93) { if constexpr (ref()) return (aZ); else return aZ; }
+      if constexpr (is() == 94) { if constexpr (ref()) return (ba); else return ba; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 95);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX,aY,aZ,
+        ba
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 68) { ax = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 69) { ay = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 70) { az = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 71) { aA = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 72) { aB = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 73) { aC = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 74) { aD = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 75) { aE = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 76) { aF = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 77) { aG = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 78) { aH = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 79) { aJ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 80) { aK = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 81) { aL = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 82) { aM = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 83) { aN = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 84) { aP = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 85) { aQ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 86) { aR = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 87) { aS = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 88) { aU = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 89) { aV = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 90) { aW = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 91) { aX = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 92) { aY = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 93) { aZ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 94) { ba = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<96>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX,aY,aZ,
-    ba,bb
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX,aY,aZ,
-    ba,bb
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<96>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 96);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX,aY,aZ,
+        ba,bb
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+      if constexpr (is() == 68) { if constexpr (ref()) return (ax); else return ax; }
+      if constexpr (is() == 69) { if constexpr (ref()) return (ay); else return ay; }
+      if constexpr (is() == 70) { if constexpr (ref()) return (az); else return az; }
+      if constexpr (is() == 71) { if constexpr (ref()) return (aA); else return aA; }
+      if constexpr (is() == 72) { if constexpr (ref()) return (aB); else return aB; }
+      if constexpr (is() == 73) { if constexpr (ref()) return (aC); else return aC; }
+      if constexpr (is() == 74) { if constexpr (ref()) return (aD); else return aD; }
+      if constexpr (is() == 75) { if constexpr (ref()) return (aE); else return aE; }
+      if constexpr (is() == 76) { if constexpr (ref()) return (aF); else return aF; }
+      if constexpr (is() == 77) { if constexpr (ref()) return (aG); else return aG; }
+      if constexpr (is() == 78) { if constexpr (ref()) return (aH); else return aH; }
+      if constexpr (is() == 79) { if constexpr (ref()) return (aJ); else return aJ; }
+      if constexpr (is() == 80) { if constexpr (ref()) return (aK); else return aK; }
+      if constexpr (is() == 81) { if constexpr (ref()) return (aL); else return aL; }
+      if constexpr (is() == 82) { if constexpr (ref()) return (aM); else return aM; }
+      if constexpr (is() == 83) { if constexpr (ref()) return (aN); else return aN; }
+      if constexpr (is() == 84) { if constexpr (ref()) return (aP); else return aP; }
+      if constexpr (is() == 85) { if constexpr (ref()) return (aQ); else return aQ; }
+      if constexpr (is() == 86) { if constexpr (ref()) return (aR); else return aR; }
+      if constexpr (is() == 87) { if constexpr (ref()) return (aS); else return aS; }
+      if constexpr (is() == 88) { if constexpr (ref()) return (aU); else return aU; }
+      if constexpr (is() == 89) { if constexpr (ref()) return (aV); else return aV; }
+      if constexpr (is() == 90) { if constexpr (ref()) return (aW); else return aW; }
+      if constexpr (is() == 91) { if constexpr (ref()) return (aX); else return aX; }
+      if constexpr (is() == 92) { if constexpr (ref()) return (aY); else return aY; }
+      if constexpr (is() == 93) { if constexpr (ref()) return (aZ); else return aZ; }
+      if constexpr (is() == 94) { if constexpr (ref()) return (ba); else return ba; }
+      if constexpr (is() == 95) { if constexpr (ref()) return (bb); else return bb; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 96);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX,aY,aZ,
+        ba,bb
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 68) { ax = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 69) { ay = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 70) { az = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 71) { aA = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 72) { aB = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 73) { aC = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 74) { aD = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 75) { aE = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 76) { aF = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 77) { aG = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 78) { aH = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 79) { aJ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 80) { aK = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 81) { aL = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 82) { aM = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 83) { aN = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 84) { aP = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 85) { aQ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 86) { aR = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 87) { aS = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 88) { aU = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 89) { aV = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 90) { aW = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 91) { aX = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 92) { aY = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 93) { aZ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 94) { ba = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 95) { bb = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<97>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX,aY,aZ,
-    ba,bb,bc
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX,aY,aZ,
-    ba,bb,bc
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<97>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 97);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX,aY,aZ,
+        ba,bb,bc
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+      if constexpr (is() == 68) { if constexpr (ref()) return (ax); else return ax; }
+      if constexpr (is() == 69) { if constexpr (ref()) return (ay); else return ay; }
+      if constexpr (is() == 70) { if constexpr (ref()) return (az); else return az; }
+      if constexpr (is() == 71) { if constexpr (ref()) return (aA); else return aA; }
+      if constexpr (is() == 72) { if constexpr (ref()) return (aB); else return aB; }
+      if constexpr (is() == 73) { if constexpr (ref()) return (aC); else return aC; }
+      if constexpr (is() == 74) { if constexpr (ref()) return (aD); else return aD; }
+      if constexpr (is() == 75) { if constexpr (ref()) return (aE); else return aE; }
+      if constexpr (is() == 76) { if constexpr (ref()) return (aF); else return aF; }
+      if constexpr (is() == 77) { if constexpr (ref()) return (aG); else return aG; }
+      if constexpr (is() == 78) { if constexpr (ref()) return (aH); else return aH; }
+      if constexpr (is() == 79) { if constexpr (ref()) return (aJ); else return aJ; }
+      if constexpr (is() == 80) { if constexpr (ref()) return (aK); else return aK; }
+      if constexpr (is() == 81) { if constexpr (ref()) return (aL); else return aL; }
+      if constexpr (is() == 82) { if constexpr (ref()) return (aM); else return aM; }
+      if constexpr (is() == 83) { if constexpr (ref()) return (aN); else return aN; }
+      if constexpr (is() == 84) { if constexpr (ref()) return (aP); else return aP; }
+      if constexpr (is() == 85) { if constexpr (ref()) return (aQ); else return aQ; }
+      if constexpr (is() == 86) { if constexpr (ref()) return (aR); else return aR; }
+      if constexpr (is() == 87) { if constexpr (ref()) return (aS); else return aS; }
+      if constexpr (is() == 88) { if constexpr (ref()) return (aU); else return aU; }
+      if constexpr (is() == 89) { if constexpr (ref()) return (aV); else return aV; }
+      if constexpr (is() == 90) { if constexpr (ref()) return (aW); else return aW; }
+      if constexpr (is() == 91) { if constexpr (ref()) return (aX); else return aX; }
+      if constexpr (is() == 92) { if constexpr (ref()) return (aY); else return aY; }
+      if constexpr (is() == 93) { if constexpr (ref()) return (aZ); else return aZ; }
+      if constexpr (is() == 94) { if constexpr (ref()) return (ba); else return ba; }
+      if constexpr (is() == 95) { if constexpr (ref()) return (bb); else return bb; }
+      if constexpr (is() == 96) { if constexpr (ref()) return (bc); else return bc; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 97);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX,aY,aZ,
+        ba,bb,bc
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 68) { ax = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 69) { ay = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 70) { az = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 71) { aA = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 72) { aB = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 73) { aC = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 74) { aD = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 75) { aE = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 76) { aF = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 77) { aG = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 78) { aH = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 79) { aJ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 80) { aK = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 81) { aL = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 82) { aM = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 83) { aN = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 84) { aP = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 85) { aQ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 86) { aR = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 87) { aS = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 88) { aU = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 89) { aV = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 90) { aW = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 91) { aX = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 92) { aY = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 93) { aZ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 94) { ba = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 95) { bb = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 96) { bc = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<98>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX,aY,aZ,
-    ba,bb,bc,bd
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX,aY,aZ,
-    ba,bb,bc,bd
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<98>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 98);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX,aY,aZ,
+        ba,bb,bc,bd
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+      if constexpr (is() == 68) { if constexpr (ref()) return (ax); else return ax; }
+      if constexpr (is() == 69) { if constexpr (ref()) return (ay); else return ay; }
+      if constexpr (is() == 70) { if constexpr (ref()) return (az); else return az; }
+      if constexpr (is() == 71) { if constexpr (ref()) return (aA); else return aA; }
+      if constexpr (is() == 72) { if constexpr (ref()) return (aB); else return aB; }
+      if constexpr (is() == 73) { if constexpr (ref()) return (aC); else return aC; }
+      if constexpr (is() == 74) { if constexpr (ref()) return (aD); else return aD; }
+      if constexpr (is() == 75) { if constexpr (ref()) return (aE); else return aE; }
+      if constexpr (is() == 76) { if constexpr (ref()) return (aF); else return aF; }
+      if constexpr (is() == 77) { if constexpr (ref()) return (aG); else return aG; }
+      if constexpr (is() == 78) { if constexpr (ref()) return (aH); else return aH; }
+      if constexpr (is() == 79) { if constexpr (ref()) return (aJ); else return aJ; }
+      if constexpr (is() == 80) { if constexpr (ref()) return (aK); else return aK; }
+      if constexpr (is() == 81) { if constexpr (ref()) return (aL); else return aL; }
+      if constexpr (is() == 82) { if constexpr (ref()) return (aM); else return aM; }
+      if constexpr (is() == 83) { if constexpr (ref()) return (aN); else return aN; }
+      if constexpr (is() == 84) { if constexpr (ref()) return (aP); else return aP; }
+      if constexpr (is() == 85) { if constexpr (ref()) return (aQ); else return aQ; }
+      if constexpr (is() == 86) { if constexpr (ref()) return (aR); else return aR; }
+      if constexpr (is() == 87) { if constexpr (ref()) return (aS); else return aS; }
+      if constexpr (is() == 88) { if constexpr (ref()) return (aU); else return aU; }
+      if constexpr (is() == 89) { if constexpr (ref()) return (aV); else return aV; }
+      if constexpr (is() == 90) { if constexpr (ref()) return (aW); else return aW; }
+      if constexpr (is() == 91) { if constexpr (ref()) return (aX); else return aX; }
+      if constexpr (is() == 92) { if constexpr (ref()) return (aY); else return aY; }
+      if constexpr (is() == 93) { if constexpr (ref()) return (aZ); else return aZ; }
+      if constexpr (is() == 94) { if constexpr (ref()) return (ba); else return ba; }
+      if constexpr (is() == 95) { if constexpr (ref()) return (bb); else return bb; }
+      if constexpr (is() == 96) { if constexpr (ref()) return (bc); else return bc; }
+      if constexpr (is() == 97) { if constexpr (ref()) return (bd); else return bd; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 98);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX,aY,aZ,
+        ba,bb,bc,bd
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 68) { ax = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 69) { ay = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 70) { az = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 71) { aA = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 72) { aB = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 73) { aC = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 74) { aD = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 75) { aE = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 76) { aF = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 77) { aG = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 78) { aH = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 79) { aJ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 80) { aK = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 81) { aL = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 82) { aM = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 83) { aN = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 84) { aP = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 85) { aQ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 86) { aR = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 87) { aS = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 88) { aU = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 89) { aV = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 90) { aW = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 91) { aX = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 92) { aY = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 93) { aZ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 94) { ba = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 95) { bb = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 96) { bc = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 97) { bd = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<99>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX,aY,aZ,
-    ba,bb,bc,bd,be
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX,aY,aZ,
-    ba,bb,bc,bd,be
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<99>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 99);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX,aY,aZ,
+        ba,bb,bc,bd,be
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+      if constexpr (is() == 68) { if constexpr (ref()) return (ax); else return ax; }
+      if constexpr (is() == 69) { if constexpr (ref()) return (ay); else return ay; }
+      if constexpr (is() == 70) { if constexpr (ref()) return (az); else return az; }
+      if constexpr (is() == 71) { if constexpr (ref()) return (aA); else return aA; }
+      if constexpr (is() == 72) { if constexpr (ref()) return (aB); else return aB; }
+      if constexpr (is() == 73) { if constexpr (ref()) return (aC); else return aC; }
+      if constexpr (is() == 74) { if constexpr (ref()) return (aD); else return aD; }
+      if constexpr (is() == 75) { if constexpr (ref()) return (aE); else return aE; }
+      if constexpr (is() == 76) { if constexpr (ref()) return (aF); else return aF; }
+      if constexpr (is() == 77) { if constexpr (ref()) return (aG); else return aG; }
+      if constexpr (is() == 78) { if constexpr (ref()) return (aH); else return aH; }
+      if constexpr (is() == 79) { if constexpr (ref()) return (aJ); else return aJ; }
+      if constexpr (is() == 80) { if constexpr (ref()) return (aK); else return aK; }
+      if constexpr (is() == 81) { if constexpr (ref()) return (aL); else return aL; }
+      if constexpr (is() == 82) { if constexpr (ref()) return (aM); else return aM; }
+      if constexpr (is() == 83) { if constexpr (ref()) return (aN); else return aN; }
+      if constexpr (is() == 84) { if constexpr (ref()) return (aP); else return aP; }
+      if constexpr (is() == 85) { if constexpr (ref()) return (aQ); else return aQ; }
+      if constexpr (is() == 86) { if constexpr (ref()) return (aR); else return aR; }
+      if constexpr (is() == 87) { if constexpr (ref()) return (aS); else return aS; }
+      if constexpr (is() == 88) { if constexpr (ref()) return (aU); else return aU; }
+      if constexpr (is() == 89) { if constexpr (ref()) return (aV); else return aV; }
+      if constexpr (is() == 90) { if constexpr (ref()) return (aW); else return aW; }
+      if constexpr (is() == 91) { if constexpr (ref()) return (aX); else return aX; }
+      if constexpr (is() == 92) { if constexpr (ref()) return (aY); else return aY; }
+      if constexpr (is() == 93) { if constexpr (ref()) return (aZ); else return aZ; }
+      if constexpr (is() == 94) { if constexpr (ref()) return (ba); else return ba; }
+      if constexpr (is() == 95) { if constexpr (ref()) return (bb); else return bb; }
+      if constexpr (is() == 96) { if constexpr (ref()) return (bc); else return bc; }
+      if constexpr (is() == 97) { if constexpr (ref()) return (bd); else return bd; }
+      if constexpr (is() == 98) { if constexpr (ref()) return (be); else return be; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 99);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX,aY,aZ,
+        ba,bb,bc,bd,be
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 68) { ax = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 69) { ay = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 70) { az = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 71) { aA = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 72) { aB = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 73) { aC = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 74) { aD = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 75) { aE = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 76) { aF = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 77) { aG = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 78) { aH = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 79) { aJ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 80) { aK = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 81) { aL = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 82) { aM = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 83) { aN = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 84) { aP = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 85) { aQ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 86) { aR = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 87) { aS = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 88) { aU = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 89) { aV = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 90) { aW = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 91) { aX = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 92) { aY = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 93) { aZ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 94) { ba = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 95) { bb = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 96) { bc = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 97) { bd = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 98) { be = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 template <class T>
-constexpr auto tie_as_tuple(T& val, size_t_<100>) noexcept {
-  auto& [
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX,aY,aZ,
-    ba,bb,bc,bd,be,bf
-  ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
-
-  return ::boost::pfr::detail::make_tuple_of_references(
-    a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
-    aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX,aY,aZ,
-    ba,bb,bc,bd,be,bf
-  );
+constexpr auto structure_member_getter_setter(T& val, size_t_<100>) noexcept {
+  return std::pair { [&val] (auto is, auto ref) -> decltype(auto) {
+      static_assert(is() < 100);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX,aY,aZ,
+        ba,bb,bc,bd,be,bf
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { if constexpr (ref()) return (a); else return a; }
+      if constexpr (is() == 1) { if constexpr (ref()) return (b); else return b; }
+      if constexpr (is() == 2) { if constexpr (ref()) return (c); else return c; }
+      if constexpr (is() == 3) { if constexpr (ref()) return (d); else return d; }
+      if constexpr (is() == 4) { if constexpr (ref()) return (e); else return e; }
+      if constexpr (is() == 5) { if constexpr (ref()) return (f); else return f; }
+      if constexpr (is() == 6) { if constexpr (ref()) return (g); else return g; }
+      if constexpr (is() == 7) { if constexpr (ref()) return (h); else return h; }
+      if constexpr (is() == 8) { if constexpr (ref()) return (j); else return j; }
+      if constexpr (is() == 9) { if constexpr (ref()) return (k); else return k; }
+      if constexpr (is() == 10) { if constexpr (ref()) return (l); else return l; }
+      if constexpr (is() == 11) { if constexpr (ref()) return (m); else return m; }
+      if constexpr (is() == 12) { if constexpr (ref()) return (n); else return n; }
+      if constexpr (is() == 13) { if constexpr (ref()) return (p); else return p; }
+      if constexpr (is() == 14) { if constexpr (ref()) return (q); else return q; }
+      if constexpr (is() == 15) { if constexpr (ref()) return (r); else return r; }
+      if constexpr (is() == 16) { if constexpr (ref()) return (s); else return s; }
+      if constexpr (is() == 17) { if constexpr (ref()) return (t); else return t; }
+      if constexpr (is() == 18) { if constexpr (ref()) return (u); else return u; }
+      if constexpr (is() == 19) { if constexpr (ref()) return (v); else return v; }
+      if constexpr (is() == 20) { if constexpr (ref()) return (w); else return w; }
+      if constexpr (is() == 21) { if constexpr (ref()) return (x); else return x; }
+      if constexpr (is() == 22) { if constexpr (ref()) return (y); else return y; }
+      if constexpr (is() == 23) { if constexpr (ref()) return (z); else return z; }
+      if constexpr (is() == 24) { if constexpr (ref()) return (A); else return A; }
+      if constexpr (is() == 25) { if constexpr (ref()) return (B); else return B; }
+      if constexpr (is() == 26) { if constexpr (ref()) return (C); else return C; }
+      if constexpr (is() == 27) { if constexpr (ref()) return (D); else return D; }
+      if constexpr (is() == 28) { if constexpr (ref()) return (E); else return E; }
+      if constexpr (is() == 29) { if constexpr (ref()) return (F); else return F; }
+      if constexpr (is() == 30) { if constexpr (ref()) return (G); else return G; }
+      if constexpr (is() == 31) { if constexpr (ref()) return (H); else return H; }
+      if constexpr (is() == 32) { if constexpr (ref()) return (J); else return J; }
+      if constexpr (is() == 33) { if constexpr (ref()) return (K); else return K; }
+      if constexpr (is() == 34) { if constexpr (ref()) return (L); else return L; }
+      if constexpr (is() == 35) { if constexpr (ref()) return (M); else return M; }
+      if constexpr (is() == 36) { if constexpr (ref()) return (N); else return N; }
+      if constexpr (is() == 37) { if constexpr (ref()) return (P); else return P; }
+      if constexpr (is() == 38) { if constexpr (ref()) return (Q); else return Q; }
+      if constexpr (is() == 39) { if constexpr (ref()) return (R); else return R; }
+      if constexpr (is() == 40) { if constexpr (ref()) return (S); else return S; }
+      if constexpr (is() == 41) { if constexpr (ref()) return (U); else return U; }
+      if constexpr (is() == 42) { if constexpr (ref()) return (V); else return V; }
+      if constexpr (is() == 43) { if constexpr (ref()) return (W); else return W; }
+      if constexpr (is() == 44) { if constexpr (ref()) return (X); else return X; }
+      if constexpr (is() == 45) { if constexpr (ref()) return (Y); else return Y; }
+      if constexpr (is() == 46) { if constexpr (ref()) return (Z); else return Z; }
+      if constexpr (is() == 47) { if constexpr (ref()) return (aa); else return aa; }
+      if constexpr (is() == 48) { if constexpr (ref()) return (ab); else return ab; }
+      if constexpr (is() == 49) { if constexpr (ref()) return (ac); else return ac; }
+      if constexpr (is() == 50) { if constexpr (ref()) return (ad); else return ad; }
+      if constexpr (is() == 51) { if constexpr (ref()) return (ae); else return ae; }
+      if constexpr (is() == 52) { if constexpr (ref()) return (af); else return af; }
+      if constexpr (is() == 53) { if constexpr (ref()) return (ag); else return ag; }
+      if constexpr (is() == 54) { if constexpr (ref()) return (ah); else return ah; }
+      if constexpr (is() == 55) { if constexpr (ref()) return (aj); else return aj; }
+      if constexpr (is() == 56) { if constexpr (ref()) return (ak); else return ak; }
+      if constexpr (is() == 57) { if constexpr (ref()) return (al); else return al; }
+      if constexpr (is() == 58) { if constexpr (ref()) return (am); else return am; }
+      if constexpr (is() == 59) { if constexpr (ref()) return (an); else return an; }
+      if constexpr (is() == 60) { if constexpr (ref()) return (ap); else return ap; }
+      if constexpr (is() == 61) { if constexpr (ref()) return (aq); else return aq; }
+      if constexpr (is() == 62) { if constexpr (ref()) return (ar); else return ar; }
+      if constexpr (is() == 63) { if constexpr (ref()) return (as); else return as; }
+      if constexpr (is() == 64) { if constexpr (ref()) return (at); else return at; }
+      if constexpr (is() == 65) { if constexpr (ref()) return (au); else return au; }
+      if constexpr (is() == 66) { if constexpr (ref()) return (av); else return av; }
+      if constexpr (is() == 67) { if constexpr (ref()) return (aw); else return aw; }
+      if constexpr (is() == 68) { if constexpr (ref()) return (ax); else return ax; }
+      if constexpr (is() == 69) { if constexpr (ref()) return (ay); else return ay; }
+      if constexpr (is() == 70) { if constexpr (ref()) return (az); else return az; }
+      if constexpr (is() == 71) { if constexpr (ref()) return (aA); else return aA; }
+      if constexpr (is() == 72) { if constexpr (ref()) return (aB); else return aB; }
+      if constexpr (is() == 73) { if constexpr (ref()) return (aC); else return aC; }
+      if constexpr (is() == 74) { if constexpr (ref()) return (aD); else return aD; }
+      if constexpr (is() == 75) { if constexpr (ref()) return (aE); else return aE; }
+      if constexpr (is() == 76) { if constexpr (ref()) return (aF); else return aF; }
+      if constexpr (is() == 77) { if constexpr (ref()) return (aG); else return aG; }
+      if constexpr (is() == 78) { if constexpr (ref()) return (aH); else return aH; }
+      if constexpr (is() == 79) { if constexpr (ref()) return (aJ); else return aJ; }
+      if constexpr (is() == 80) { if constexpr (ref()) return (aK); else return aK; }
+      if constexpr (is() == 81) { if constexpr (ref()) return (aL); else return aL; }
+      if constexpr (is() == 82) { if constexpr (ref()) return (aM); else return aM; }
+      if constexpr (is() == 83) { if constexpr (ref()) return (aN); else return aN; }
+      if constexpr (is() == 84) { if constexpr (ref()) return (aP); else return aP; }
+      if constexpr (is() == 85) { if constexpr (ref()) return (aQ); else return aQ; }
+      if constexpr (is() == 86) { if constexpr (ref()) return (aR); else return aR; }
+      if constexpr (is() == 87) { if constexpr (ref()) return (aS); else return aS; }
+      if constexpr (is() == 88) { if constexpr (ref()) return (aU); else return aU; }
+      if constexpr (is() == 89) { if constexpr (ref()) return (aV); else return aV; }
+      if constexpr (is() == 90) { if constexpr (ref()) return (aW); else return aW; }
+      if constexpr (is() == 91) { if constexpr (ref()) return (aX); else return aX; }
+      if constexpr (is() == 92) { if constexpr (ref()) return (aY); else return aY; }
+      if constexpr (is() == 93) { if constexpr (ref()) return (aZ); else return aZ; }
+      if constexpr (is() == 94) { if constexpr (ref()) return (ba); else return ba; }
+      if constexpr (is() == 95) { if constexpr (ref()) return (bb); else return bb; }
+      if constexpr (is() == 96) { if constexpr (ref()) return (bc); else return bc; }
+      if constexpr (is() == 97) { if constexpr (ref()) return (bd); else return bd; }
+      if constexpr (is() == 98) { if constexpr (ref()) return (be); else return be; }
+      if constexpr (is() == 99) { if constexpr (ref()) return (bf); else return bf; }
+    }, [&val] (auto is, auto&& assign) {
+      static_assert(is() < 100);
+      auto& [
+        a,b,c,d,e,f,g,h,j,k,l,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,S,U,V,W,X,Y,Z,
+        aa,ab,ac,ad,ae,af,ag,ah,aj,ak,al,am,an,ap,aq,ar,as,at,au,av,aw,ax,ay,az,aA,aB,aC,aD,aE,aF,aG,aH,aJ,aK,aL,aM,aN,aP,aQ,aR,aS,aU,aV,aW,aX,aY,aZ,
+        ba,bb,bc,bd,be,bf
+      ] = val; // ====================> Boost.PFR: User-provided type is not a SimpleAggregate.
+      if constexpr (is() == 0) { a = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 1) { b = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 2) { c = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 3) { d = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 4) { e = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 5) { f = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 6) { g = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 7) { h = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 8) { j = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 9) { k = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 10) { l = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 11) { m = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 12) { n = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 13) { p = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 14) { q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 15) { r = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 16) { s = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 17) { t = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 18) { u = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 19) { v = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 20) { w = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 21) { x = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 22) { y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 23) { z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 24) { A = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 25) { B = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 26) { C = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 27) { D = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 28) { E = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 29) { F = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 30) { G = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 31) { H = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 32) { J = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 33) { K = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 34) { L = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 35) { M = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 36) { N = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 37) { P = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 38) { Q = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 39) { R = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 40) { S = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 41) { U = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 42) { V = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 43) { W = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 44) { X = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 45) { Y = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 46) { Z = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 47) { aa = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 48) { ab = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 49) { ac = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 50) { ad = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 51) { ae = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 52) { af = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 53) { ag = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 54) { ah = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 55) { aj = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 56) { ak = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 57) { al = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 58) { am = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 59) { an = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 60) { ap = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 61) { aq = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 62) { ar = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 63) { as = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 64) { at = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 65) { au = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 66) { av = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 67) { aw = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 68) { ax = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 69) { ay = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 70) { az = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 71) { aA = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 72) { aB = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 73) { aC = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 74) { aD = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 75) { aE = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 76) { aF = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 77) { aG = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 78) { aH = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 79) { aJ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 80) { aK = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 81) { aL = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 82) { aM = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 83) { aN = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 84) { aP = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 85) { aQ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 86) { aR = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 87) { aS = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 88) { aU = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 89) { aV = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 90) { aW = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 91) { aX = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 92) { aY = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 93) { aZ = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 94) { ba = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 95) { bb = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 96) { bc = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 97) { bd = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 98) { be = std::forward<decltype(assign)>(assign); }
+      if constexpr (is() == 99) { bf = std::forward<decltype(assign)>(assign); }
+    }
+  };
 }
 
 
 template <class T, std::size_t I>
-constexpr void tie_as_tuple(T& /*val*/, size_t_<I>) noexcept {
+constexpr void structure_member_getter_setter(T& /*val*/, size_t_<I>) noexcept {
   static_assert(sizeof(T) && false,
                 "====================> Boost.PFR: Too many fields in a structure T. Regenerate include/boost/pfr/detail/core17_generated.hpp file for appropriate count of fields. For example: `python ./misc/generate_cpp17.py 300 > include/boost/pfr/detail/core17_generated.hpp`");
 }
