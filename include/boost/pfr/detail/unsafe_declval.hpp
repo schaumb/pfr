@@ -13,9 +13,15 @@
 
 namespace boost { namespace pfr { namespace detail {
 
-// This function serves as a link-time assert. If linker requires it, then
-// `unsafe_declval()` is used at runtime.
-void report_if_you_see_link_error_with_this_function() noexcept;
+template <class T>
+struct wrapper {
+    T value;
+
+    // This object serves as a link-time assert. If linker requires it, then
+    // `unsafe_declval()` is used at runtime.
+    // The wrapper class has external linkage while T has not sure.
+    static wrapper<T> report_if_you_see_link_error_with_this_object;
+};
 
 // For returning non default constructible types. Do NOT use at runtime!
 //
@@ -23,11 +29,8 @@ void report_if_you_see_link_error_with_this_function() noexcept;
 // so we reinvent it.
 template <class T>
 constexpr T unsafe_declval() noexcept {
-    report_if_you_see_link_error_with_this_function();
-
-    typename std::remove_reference<T>::type* ptr = nullptr;
-    ptr += 42; // suppresses 'null pointer dereference' warnings
-    return static_cast<T>(*ptr);
+    typedef typename std::remove_reference<T>::type type;
+    return wrapper<type>::report_if_you_see_link_error_with_this_object.value;
 }
 
 }}} // namespace boost::pfr::detail
